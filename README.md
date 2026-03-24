@@ -43,7 +43,7 @@ Phosphor Icons (UI iconography)
 # 🚀 Getting Started
 1. Prerequisites
 
-You will need a Groq API Key. You can get one for free at console.groq.com.
+You will need a Groq API Key. You can get one for free at console.groq.com/keys.
 
 # 2. Installation
 

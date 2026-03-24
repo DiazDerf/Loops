@@ -6,8 +6,6 @@ Here is a template designed specifically for your Loops project:
 
 Loops is a high-performance, browser-based AI tool that helps students and professionals transform complex documents into structured study materials. By leveraging the Groq Llama 3.1 engine, Loops creates comprehensive reviewers and interactive quizzes in seconds.
 
-![alt text](https://media.discordapp.net/attachments/1328304498468327506/1485973644957192315/Copilot_20260324_200417.png?width=100&height=100)
-
 # ✨ Key Features
 
 📄 Multi-Format Support: Upload .pdf, .docx, or .pptx files seamlessly.

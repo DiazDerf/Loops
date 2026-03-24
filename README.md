@@ -86,13 +86,3 @@ The app uses llama-3.1-8b-instant by default to ensure you stay within the free 
 # 📜 License
 
 This project is open-source. Feel free to fork and modify!
-
-Suggested Repository Details for GitHub:
-
-Repository Name: loops-ai-study-companion
-
-Description: An AI-powered study tool that converts documents into reviewers and quizzes using Groq Llama 3.1.
-
-Topics: javascript, ai, groq, education, study-tool, llama3, tailwind-css
-
-Would you like me to help you set up a .gitignore or a specific file for GitHub Pages deployment?

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loops - AI Study Companion</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { brand: { 50: '#f0fdfa', 100: '#ccfbf1', 500: '#14b8a6', 600: '#0d9488', 900: '#134e4a' } },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans min-h-screen flex flex-col antialiased">
+    
+    <header class="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-[1400px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="app.resetView()">
+                <img src="https://media.discordapp.net/attachments/1328304498468327506/1485973644957192315/Copilot_20260324_200417.png?ex=69c3d04d&is=69c27ecd&hm=76b5831523dc00f2914e421517b250c24f0bdcbbfada140aa35e5941c0ae9d5b" alt="Logo" class="w-10 h-10 rounded-lg">
+                <h1 class="font-bold text-xl tracking-tight text-slate-800">Loops</h1>
+            </div>
+            <button id="settingsBtn" class="p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-full transition-colors">
+                <i class="ph ph-gear text-2xl"></i>
+            </button>
+        </div>
+    </header>
+
+    <main id="mainContainer" class="flex-1 w-full max-w-[1400px] mx-auto p-4 sm:p-6 lg:p-8 flex flex-col">
+
+        <!-- Upload View -->
+        <section id="uploadView" class="view-section active flex flex-col items-center justify-center max-w-2xl mx-auto w-full py-12">
+            <div class="text-center mb-10">
+                <h2 class="text-4xl font-extrabold text-slate-900 mb-4 tracking-tight">AI Study <span class="text-brand-600">Powerhouse</span></h2>
+                <p class="text-lg text-slate-600">Upload documents to generate reviewers and interactive quizzes instantly.</p>
+            </div>
+            <div id="dropZone" class="w-full relative group cursor-pointer">
+                <div class="relative bg-white border-2 border-dashed border-slate-300 rounded-3xl p-12 text-center transition-all group-hover:border-brand-500 group-hover:bg-brand-50/50">
+                    <i class="ph ph-file-arrow-up text-5xl text-slate-400 mb-4 group-hover:text-brand-500 transition-colors"></i>
+                    <p class="text-xl font-semibold text-slate-700">Click or drag and drop</p>
+                    <p class="text-sm text-slate-500 mt-2">Supports PDF, DOCX, PPTX (Max 20MB)</p>
+                    <input type="file" id="fileInput" class="hidden" accept=".pdf,.doc,.docx,.pptx">
+                </div>
+            </div>
+        </section>
+
+        <!-- Processing View -->
+        <section id="processingView" class="view-section hidden flex flex-col items-center justify-center py-20 text-center">
+            <div class="w-16 h-16 border-4 border-brand-500 border-t-transparent rounded-full animate-spin mb-6"></div>
+            <h3 class="text-2xl font-bold text-slate-800 mb-2" id="processingTitle">Analyzing...</h3>
+            <p class="text-slate-500" id="processingDesc">Please wait while Loops processes your study material.</p>
+        </section>
+
+        <!-- Results View -->
+        <section id="resultsView" class="view-section hidden grid grid-cols-1 lg:grid-cols-12 gap-8 w-full items-start">
+            
+            <div class="lg:col-span-8 space-y-6">
+                <div class="flex items-center justify-between bg-white p-4 rounded-2xl border border-slate-200 shadow-sm gap-4">
+                    <div class="flex items-center gap-3">
+                        <i class="ph ph-file-text text-brand-500 text-2xl"></i>
+                        <span id="fileNameDisplay" class="font-medium text-slate-700 truncate max-w-[200px]">document.pdf</span>
+                    </div>
+                    <div class="bg-slate-100 p-1 rounded-xl flex overflow-x-auto">
+                        <button class="tab-btn active px-6 py-2 rounded-lg text-sm font-medium whitespace-nowrap" data-target="reviewerTab">Reviewer</button>
+                        <button class="tab-btn px-6 py-2 rounded-lg text-sm font-medium whitespace-nowrap" data-target="quizTab">Quiz</button>
+                    </div>
+                </div>
+
+                <div id="reviewerTab" class="tab-content active prose prose-slate max-w-none bg-white p-8 sm:p-12 rounded-3xl border border-slate-200 shadow-sm min-h-[600px]"></div>
+
+                <div id="quizTab" class="tab-content hidden space-y-6">
+                    <div id="quizContainer" class="space-y-6"></div>
+                    <div id="quizResult" class="hidden bg-white p-8 rounded-3xl border border-slate-200 text-center">
+                        <h3 class="text-2xl font-bold mb-4">Quiz Complete!</h3>
+                        <p class="text-lg mb-6">Score: <span id="scoreDisplay" class="text-brand-600 font-bold">0</span> / <span id="totalDisplay">0</span></p>
+                        <button onclick="app.retakeQuiz()" class="bg-slate-900 text-white px-8 py-3 rounded-xl font-medium">Retake Quiz</button>
+                    </div>
+                    <button id="submitQuizBtn" class="w-full bg-brand-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg">Submit Answers</button>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <aside class="lg:col-span-4 lg:sticky lg:top-24 h-[calc(100vh-120px)] flex flex-col bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden">
+                <div class="p-4 border-b border-slate-100 bg-slate-50 flex items-center gap-2">
+                    <i class="ph ph-sparkle text-brand-500 text-xl"></i>
+                    <h3 class="font-bold text-slate-800">Study Assistant</h3>
+                </div>
+                <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-white flex flex-col">
+                    <div class="message-ai">I've analyzed your file. Ask me any questions about the content!</div>
+                </div>
+                <form id="chatForm" class="p-4 bg-slate-50 border-t border-slate-100 flex gap-2">
+                    <input type="text" id="chatInput" placeholder="Ask a question..." class="flex-1 bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none" autocomplete="off">
+                    <button type="submit" class="bg-brand-600 text-white p-3 rounded-xl hover:bg-brand-700 transition-colors">
+                        <i class="ph ph-paper-plane-right text-xl"></i>
+                    </button>
+                </form>
+            </aside>
+        </section>
+    </main>
+
+    <div id="settingsModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden transform transition-all translate-y-4 opacity-0 scale-95" id="settingsModalContent">
+            <div class="p-8">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-2xl font-bold">API Settings</h3>
+                    <button class="modal-close p-1 hover:bg-slate-100 rounded-lg"><i class="ph ph-x text-xl"></i></button>
+                </div>
+                <div class="space-y-4">
+                    <p class="text-sm text-slate-500">Enter your Groq API Key.</p>
+                    <input type="password" id="apiKeyInput" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 font-mono text-sm" placeholder="gsk_...">
+                </div>
+                <button id="saveSettingsBtn" class="w-full mt-8 bg-brand-600 text-white py-3 rounded-xl font-bold shadow-lg">Save & Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

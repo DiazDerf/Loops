@@ -1,7 +1,3 @@
-Since you've built a complete tool, you should have a solid README.md file. This is the first thing people see when they visit your repository.
-
-Here is a template designed specifically for your Loops project:
-
 # 📂 Loops - AI Study Companion 🚀
 
 Loops is a high-performance, browser-based AI tool that helps students and professionals transform complex documents into structured study materials. By leveraging the Groq Llama 3.1 engine, Loops creates comprehensive reviewers and interactive quizzes in seconds.

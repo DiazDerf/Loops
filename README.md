@@ -2,6 +2,8 @@
 
 Loops is a high-performance, browser-based AI tool that helps students and professionals transform complex documents into structured study materials. By leveraging the Groq Llama 3.1 engine, Loops creates comprehensive reviewers and interactive quizzes in seconds.
 
+# Live App https://loops-reviewer.vercel.app/
+
 # ✨ Key Features
 
 📄 Multi-Format Support: Upload .pdf, .docx, or .pptx files seamlessly.
